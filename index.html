@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar"> <!-- Change language to Arabic -->
+<head>
+  <title>جاردينيا سيتى - تطبيق جاردينيا</title>
+  <meta name="description" content="جاردينيا سيتى، كمبوند جاردينيا سيتى على طريق السويس">
+  <meta name="keywords" content="جاردينيا سيتى, جاردينيا, تطبيق جاردينيا, كمبوند جاردينيا, Gardenia, Compound Gardenia City">
+
+  <!-- Base href for Flutter web app (use for subdirectories) -->
+
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Gardenia City – A great way to explore and manage your residential community.">
+
+  <!-- iOS Meta Tags & Icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gardenia City">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <meta name="theme-color" content="#24590a"> <!-- Replace with your desired color -->
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <!-- PWA Meta Tags -->
+
+  <!-- Manifest File for PWA -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Title of the Web Application -->
+  <title>Gardenia City</title>
+
+  <!-- Additional Meta Tags for PWA support -->
+  <meta name="application-name" content="Gardenia City">
+  <meta name="apple-mobile-web-app-title" content="Gardenia City">
+
+  <!-- Open Graph Tags for better sharing experience -->
+  <meta property="og:title" content="Gardenia City">
+  <meta property="og:description" content="تطبيق جاردينيا سيتى">
+  <meta property="og:image" content="icons/Icon-512.png">
+  <meta property="og:url" content="https://gardenia.today/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Gardenia City">
+  <meta name="twitter:description" content="تطبيق جاردينيا سيتى">
+  <meta name="twitter:image" content="icons/Icon-512.png">
+
+
+
+
+  <!-- Add Service Worker for offline support -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/service_worker.js').then(function (registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        }, function (error) {
+          console.log('Service Worker registration failed:', error);
+        });
+      });
+    }
+  </script>
+
+  <script>
+    firebase.messaging().requestPermission()
+      .then(function() {
+        console.log('Notification permission granted.');
+      })
+      .catch(function(err) {
+        console.log('Unable to get permission to notify.', err);
+      });
+  </script>
+
+
+  <style>
+    /* Popup style */
+    #install-popup {
+      display: none;  /* Initially hidden */
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #install-popup .popup-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    #install-popup button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+<!-- Popup Modal for Install -->
+<div id="install-popup">
+  <div class="popup-content">
+    <p>قم بتثبيت هذا التطبيق على شاشتك الرئيسية للوصول السهل!</p> <!-- Arabic message -->
+    <button id="install-btn">تثبيت</button> <!-- Arabic button text -->
+  </div>
+</div>
+
+<!-- Flutter Web Application -->
+<script src="flutter_bootstrap.js" async></script>
+
+<script>
+  let deferredPrompt;
+
+  // Listen for the 'beforeinstallprompt' event
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the default install prompt
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Show the install popup
+    document.getElementById('install-popup').style.display = 'flex';
+
+    // Add click event listener to the install button
+    document.getElementById('install-btn').addEventListener('click', () => {
+      // Show the prompt
+      deferredPrompt.prompt();
+
+      // Wait for the user's response to the prompt
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the install prompt');
+        } else {
+          console.log('User dismissed the install prompt');
+        }
+
+        // Reset deferredPrompt to null
+        deferredPrompt = null;
+        // Hide the install popup after prompt
+        document.getElementById('install-popup').style.display = 'none';
+      });
+    });
+  });
+</script>
+</body>
+</html>
